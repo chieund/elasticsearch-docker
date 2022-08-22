@@ -1,0 +1,47 @@
+version: "3.3"
+services:
+  elasticsearch:
+    container_name: es-container
+    build:
+      context: ./docker/elasticsearch/
+    environment:
+      - xpack.security.enabled=false
+      - "discovery.type=single-node"
+    volumes:
+      - "./docker/tmp/elasticsearch/data:/usr/share/elasticsearch/data"
+    networks:
+      - es-net
+    ports:
+      - 9200:9200
+
+  kibana:
+    container_name: kb-container
+    build:
+      context: ./docker/kibana/
+    environment:
+      - ELASTICSEARCH_HOSTS=$ELASTICSEARCH_HOSTS
+    networks:
+      - es-net
+    depends_on:
+      - elasticsearch
+    ports:
+      - 5601:5601
+
+  golang:
+    build:
+      context: ./docker/golang/
+    volumes:
+      - ./:/app/
+    ports:
+      - "9000:9000"
+    networks:
+      - es-net
+    depends_on:
+      - elasticsearch
+    working_dir: "/app"
+    privileged: true
+    tty: true
+
+networks:
+  es-net:
+    driver: bridge

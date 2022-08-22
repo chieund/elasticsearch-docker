@@ -1,0 +1,6 @@
+curl --request POST 'http://localhost:9000/api/v1/posts' \
+--data-raw '{
+    "title": "test title",
+    "text": "test text",
+    "tags": ["tag"]
+}'
