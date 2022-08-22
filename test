@@ -4,3 +4,12 @@ curl --request POST 'http://localhost:9000/api/v1/posts' \
     "text": "test text",
     "tags": ["tag"]
 }'
+
+GET _search
+{
+  "query": {
+    "multi_match": {
+      "query" : "text"
+    }
+  }
+}

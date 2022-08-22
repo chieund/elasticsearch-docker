@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	elastic, err := elasticsearch.New([]string{"10.9.11.49:9200"})
+	elastic, err := elasticsearch.New([]string{"http://es-container:9200"})
 	if err != nil {
 		log.Fatalln(err)
 	}
