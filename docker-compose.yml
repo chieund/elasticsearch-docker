@@ -5,10 +5,17 @@ services:
     build:
       context: ./docker/elasticsearch/
     environment:
+      - network.host=0.0.0.0
+      - discovery.type=single-node
+      - cluster.name=docker-cluster
+      - node.name=cluster1-node1
+      - xpack.license.self_generated.type=basic
       - xpack.security.enabled=false
-      - "discovery.type=single-node"
-    volumes:
-      - "./docker/tmp/elasticsearch/data:/usr/share/elasticsearch/data"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
     networks:
       - es-net
     ports:
@@ -19,7 +26,8 @@ services:
     build:
       context: ./docker/kibana/
     environment:
-      - ELASTICSEARCH_HOSTS=http://es-container:9200
+      ELASTICSEARCH_HOSTS: http://es-container:9200
+      SERVER_HOSTS: 0.0.0.0
     networks:
       - es-net
     depends_on:
