@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"example/es_golang/internal/pkg/domain"
 	"example/es_golang/internal/pkg/storage"
+	"fmt"
+	"github.com/julienschmidt/httprouter"
 	"log"
 	"net/http"
 )
@@ -42,4 +44,28 @@ func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	bdy, _ := json.Marshal(res)
 	_, _ = w.Write(bdy)
+}
+
+func (h Handler) Update(w http.ResponseWriter, r *http.Request) {
+	var req updateRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Println(err)
+		return
+	}
+
+	req.ID = httprouter.ParamsFromContext(r.Context()).ByName("id")
+	fmt.Println(req, "id")
+
+	if err := h.service.update(r.Context(), req); err != nil {
+		switch err {
+		case domain.ErrNotFound:
+			w.WriteHeader(http.StatusNotFound)
+		default:
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Println(err)
+		}
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
 }

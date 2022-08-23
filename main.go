@@ -26,6 +26,7 @@ func main() {
 	postAPI := post.New(&storage)
 	router := httprouter.New()
 	router.HandlerFunc("POST", "/api/v1/posts", postAPI.Create)
+	router.HandlerFunc("PATCH", "/api/v1/posts/:id", postAPI.Update)
 
 	log.Fatalln(http.ListenAndServe(":9000", router))
 }

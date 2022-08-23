@@ -7,7 +7,7 @@ import (
 
 type PostStorer interface {
 	Insert(ctx context.Context, post Post) error
-	//Update(ctx context.Context, post Post) error
+	Update(ctx context.Context, post Post) error
 	//Delete(ctx context.Context, id string) error
 	//FindOne(ctx context.Context, id string) (Post, error)
 }

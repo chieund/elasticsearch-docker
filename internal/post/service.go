@@ -29,3 +29,18 @@ func (s service) create(ctx context.Context, req createRequest) (createResponse,
 
 	return createResponse{ID: id}, nil
 }
+
+func (s service) update(ctx context.Context, req updateRequest) error {
+	doc := storage.Post{
+		ID:    req.ID,
+		Title: req.Title,
+		Text:  req.Text,
+		Tags:  req.Tags,
+	}
+
+	if err := s.storage.Update(ctx, doc); err != nil {
+		return err
+	}
+
+	return nil
+}
